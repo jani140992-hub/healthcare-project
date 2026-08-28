@@ -7,7 +7,7 @@ Fully compliant with HL7 FHIR R4, ICD-10-CM, LOINC, RxNorm, and HIPAA Title II a
 
 __version__ = "2.4.0"
 __author__ = "CarePulse Health Technologies"
-__license__ = "Apache-2.0"
+__license__ = "Proprietary"
 
 from carepulse.config import Config, get_config
 from carepulse.database import DatabaseEngine, get_db

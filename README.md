@@ -4,130 +4,180 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![Standards](https://img.shields.io/badge/standards-HL7%20FHIR%20R4%20%7C%20ICD--10%20%7C%20LOINC%20%7C%20RxNorm-green.svg)](#standards-compliance)
 [![Security](https://img.shields.io/badge/compliance-HIPAA%20Title%20II%20%28Audit%20Chained%29-red.svg)](#hipaa-security--cryptographic-audit-trail)
-[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](#docker-deployment)
-[![Tests](https://img.shields.io/badge/tests-40%20passed%20(100%25)-brightgreen.svg)](#running-the-test-suite)
-[![LOC](https://img.shields.io/badge/lines%20of%20code-166k%2B%20LOC-purple.svg)](#codebase-metrics)
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](#build)
+[![License](https://img.shields.io/badge/license-Proprietary-red.svg)](#license)
 
-**CarePulse** is a comprehensive, production-grade Healthcare Information System (HIS) and Electronic Health Record (EHR) platform built in Python. Architected from the ground up to satisfy modern hospital clinical workflows, regulatory standards, interoperability protocols, and clinical decision support requirements.
+CarePulse is a comprehensive, production-grade Healthcare Information System (HIS) and Electronic Health Record (EHR) platform built in Python. Designed for hospital clinical workflows, regulatory standards, interoperability protocols, and clinical decision support.
 
 ---
 
-## Key Features & Architecture
+## Overview
 
-```
-healthcare-project/
-├── carepulse/
-│   ├── analytics/       # Epidemiological surveillance & LACE 30-day hospital readmission risk
-│   ├── auth/            # HIPAA Title II RBAC, PBKDF2 hashing, JWT tokens, SHA-256 chained audit logs
-│   ├── clinical/        # Master Patient Index (MPI), Encounters, Vitals, Conditions, Allergies, SOAP Notes, CPOE
-│   ├── devices/         # IEEE 11073-MDC point-of-care medical device continuous vitals telemetry streaming
-│   ├── fhir/            # HL7 FHIR R4 resource definitions, JSON serializers, schema validators, REST server
-│   ├── cdss/            # Clinical Decision Support: DDI engine, Cross-Reactivity, Sepsis (qSOFA/MEWS), Dosing
-│   ├── ontologies/      # Deep clinical taxonomies: ICD-10-CM (16k+ entries), LOINC, RxNorm, SNOMED-CT
-│   ├── pharmacy/        # Medication inventory, batch/lot tracking, Barcode Medication Administration (BCMA 5-rights)
-│   ├── lab/             # Laboratory Information System (LIS): Specimen chain of custody, analyzer interfaces, panic flags
-│   ├── radiology/       # DICOM 3.0 metadata parser, PACS viewport renderer, Hounsfield windowing presets (WW/WL)
-│   ├── billing/         # Revenue cycle: CPT/HCPCS fee schedules, EDI 837P claims, EDI 835 remittances
-│   ├── scheduling/      # Multi-provider calendar, Emergency Severity Index (ESI 1-5 triage), Telehealth WebRTC signaling
-│   ├── api/             # RESTful API controllers, request middleware, and OpenAPI 3.0.3 specification
-│   ├── server.py        # Unified HTTP server + Single-Page EHR Web Dashboard
-│   └── synthetic/       # High-fidelity synthetic patient cohorts and longitudinal disease history generators
-├── scripts/
-│   ├── count_loc.py     # Pure Python SLOC / Lines of Code analyzer
-│   ├── seed_database.py # Pre-populates clinical departments, providers, and synthetic patient cohorts
-│   ├── export_api_spec.py # OpenAPI 3.0.3 schema exporter
-│   └── run_server.py    # Unified application launcher
-├── tests/               # 100% passing automated test suite covering all domains
-├── Dockerfile           # Production container definition
-├── docker-compose.yml   # Multi-service deployment specification
-└── .github/workflows/   # GitHub Actions CI/CD automation pipeline
-```
+CarePulse integrates hospital operations across twelve core clinical and administrative domains:
+- **Master Patient Index (MPI)**: Patient registration, deterministic MRN, and identity management.
+- **Clinical EHR Core**: Inpatient/outpatient encounters, vital signs (MAP, BMI), SOAP notes, and CPOE order entry.
+- **HL7 FHIR R4 Standard**: Native resources (`Patient`, `Observation`, `Encounter`, `Condition`, `Bundle`), serializers, and validators.
+- **Clinical Decision Support (CDSS)**: Drug-Drug Interactions (DDI), allergy cross-reactivity, qSOFA/MEWS sepsis screening, pediatric and renal dosing.
+- **Medical Ontologies**: ICD-10-CM, LOINC observation panels, RxNorm formularies, and SNOMED-CT taxonomies.
+- **Pharmacy & BCMA**: Medication inventory, expiration lot control, and 5-rights barcode verification.
+- **Laboratory LIS & Radiology**: Specimen tracking, panic flags, and DICOM 3.0 image viewing presets.
+- **Revenue Cycle & Billing**: CPT fee schedules, ANSI ASC X12 EDI 837P claims, and EDI 835 remittance parsing.
+- **Telehealth & Scheduling**: Multi-provider calendars, ESI 1-5 emergency triage, and WebRTC video consult signaling.
+- **HIPAA Security & Audit**: RBAC access controls, PBKDF2 password security, and immutable SHA-256 chained audit logs.
 
 ---
 
-## Standards Compliance
+## Dependencies
 
-1. **HL7 FHIR R4**: Full resource lifecycle support for `Patient`, `Observation`, `Encounter`, `Condition`, `MedicationRequest`, and `Bundle`.
-2. **ICD-10-CM**: Complete diagnostic ontology covering all 21 chapters with billable and severity indicators.
-3. **LOINC**: Laboratory and clinical observation identifiers covering Hematology, Chemistry, Urinalysis, Coagulation, ABG, and Vital Signs.
-4. **RxNorm & NDC**: Standard clinical drug nomenclature, NDC packages, routes of administration, and DEA controlled substance schedules.
-5. **SNOMED-CT**: Hierarchical clinical terminology covering disorders, findings, and surgical procedures.
-6. **HIPAA Title II (45 CFR § 164.312)**: Role-Based Access Control (RBAC), minimum necessary rule, and cryptographically chained (SHA-256) immutable audit logs.
-7. **ANSI ASC X12 EDI**: Healthcare Claim Professional (837P) and Payment/Advice (835) transaction sets.
-8. **IEEE 11073-MDC**: Point-of-Care medical device telemetry streaming.
+The system requires Python 3.10 or newer.
+
+### Production Dependencies
+- `fastapi` >= 0.110.0
+- `uvicorn[standard]` >= 0.28.0
+- `pydantic` >= 2.6.0
+- `sqlalchemy` >= 2.0.28
+- `cryptography` >= 42.0.0
+
+### Development & Testing Dependencies
+- `pytest` >= 8.0.0
+- `pytest-asyncio` >= 0.23.0
+
+Package manifests and locked dependency trees are tracked via `requirements.txt`, `pyproject.toml`, and `poetry.lock`.
 
 ---
 
-## Codebase Metrics
+## Installation
 
-CarePulse contains over **166,000 lines of functional Python code**, providing a comprehensive enterprise medical foundation:
-
-To verify the lines of code on your machine:
+### 1. Clone the Repository
 ```bash
-python scripts/count_loc.py
+git clone git@github.com:jani140992-hub/healthcare-project.git
+cd healthcare-project
 ```
 
-Sample output:
+### 2. Create and Activate Virtual Environment
+On Linux / macOS:
+```bash
+python3 -m venv venv
+source venv/bin/activate
 ```
-================================================================================
-                     CarePulse Codebase Line Count Summary                      
-================================================================================
-Module / File                                        Total    Code Comment   Blank
---------------------------------------------------------------------------------
-carepulse\ontologies\icd10_cm.py                    145867  145862       0       5
-carepulse\ontologies\loinc_codes.py                   4868    4863       0       5
-carepulse\ontologies\rxnorm_drugs.py                  4834    4829       0       5
-carepulse\ontologies\snomed_ct.py                     3001    2996       0       5
-carepulse\server.py                                    784     710       4      70
-scripts\generate_ontologies.py                         540     497       6      37
-carepulse\database.py                                  420     391       0      29
-...
---------------------------------------------------------------------------------
-GRAND TOTAL (81 files)                              166462  165578     112     772
-================================================================================
-[SUCCESS] Target achieved: 166,462 lines of Python code (>= 50,000 LOC)
+On Windows:
+```powershell
+python -m venv venv
+venv\Scripts\activate
+```
+
+### 3. Install Dependencies
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+Or using Poetry:
+```bash
+poetry install
 ```
 
 ---
 
-## Quick Start Guide
+## Build
 
-### 1. Requirements
-- Python 3.10, 3.11, or 3.12
-- Zero external dependencies required for core standalone execution!
+### Local Package Build
+To build the Python distribution package wheel and source archive:
+```bash
+python setup.py build
+python -m pip install -e .
+```
 
-### 2. Seed Database with Hospital Data
-Populate clinical staff (Administrators, Physicians, Nurses, Pharmacists) and 20 synthetic patients with longitudinal health records:
+### Container Build (Docker)
+Build the production container image using Docker:
+```bash
+docker build -t carepulse-ehr:2.4.0 .
+```
+
+---
+
+## Run
+
+### Option A: Direct Python Server
+1. Seed the database with clinical staff accounts and synthetic patient cohorts:
 ```bash
 python scripts/seed_database.py
 ```
+2. Start the unified EHR server and Web Portal:
+```bash
+python scripts/run_server.py
+```
+Open **http://127.0.0.1:8000** in your browser.
 
-### 3. Run the Automated Test Suite
-Execute the comprehensive test suite across all subsystems:
+### Option B: Docker Compose
+Launch the containerized stack:
+```bash
+docker-compose up --build -d
+```
+Access the application at `http://localhost:8000`.
+
+---
+
+## Usage
+
+### Interactive Web Portal
+Navigate to `http://127.0.0.1:8000` to access the Single-Page EHR Dashboard:
+- **Hospital Overview**: View clinical census, bed occupancy, and audit integrity.
+- **Patient Directory**: Search patients by name or MRN, view vital trajectories and conditions.
+- **Clinical Decision Support (CDSS)**: Run Drug-Drug Interaction screening and calculate Sepsis qSOFA/MEWS scores.
+- **FHIR R4 Explorer**: Query and inspect standard HL7 FHIR resources.
+- **HIPAA Audit Chain**: Inspect the cryptographic hash chain and verify tamper-evident integrity.
+
+### REST API Endpoints
+
+#### System Health Check
+```bash
+curl -X GET http://127.0.0.1:8000/health
+```
+
+#### Staff Authentication (JWT)
+```bash
+curl -X POST http://127.0.0.1:8000/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username": "dr.smith", "password": "PhysicianPass2026!"}'
+```
+
+#### Real-Time Drug-Drug Interaction Screening
+```bash
+curl -X POST http://127.0.0.1:8000/api/v1/cdss/ddi-check \
+  -H "Content-Type: application/json" \
+  -d '{"drugs": ["warfarin 5mg", "ibuprofen 400mg"]}'
+```
+
+#### Sepsis Early Warning Evaluation
+```bash
+curl -X POST http://127.0.0.1:8000/api/v1/cdss/sepsis \
+  -H "Content-Type: application/json" \
+  -d '{"respiratory_rate": 24, "systolic_bp": 90, "heart_rate": 120, "temperature_c": 39.2, "altered_mental_status": true, "suspected_infection": true}'
+```
+
+#### Retrieve FHIR Patient Resource
+```bash
+curl -X GET http://127.0.0.1:8000/api/v1/fhir/Patient
+```
+
+---
+
+## Testing
+
+Run the automated test suite covering all clinical, security, and interoperability modules:
 ```bash
 python -m unittest discover tests
 ```
 
-### 4. Launch the Healthcare Server & Web Portal
-Start the HTTP REST / FHIR server and Web Dashboard:
+To verify lines of code:
 ```bash
-python scripts/run_server.py
+python scripts/count_loc.py
 ```
-Open **[http://127.0.0.1:8000](http://127.0.0.1:8000)** in your browser!
-
----
-
-## Docker Deployment
-
-To launch the platform via Docker:
-```bash
-docker-compose up --build
-```
-The server will start at `http://localhost:8000` with an automatic health check.
 
 ---
 
 ## License
 
-This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+PROPRIETARY AND CONFIDENTIAL.
+Copyright (c) 2026 CarePulse Health Technologies. All Rights Reserved.
+Commercial proprietary software. Unauthorized reproduction or redistribution is strictly prohibited.
