@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.git
+.github
+.venv
+venv
+carepulse.db
+*.sqlite3
+.pytest_cache/

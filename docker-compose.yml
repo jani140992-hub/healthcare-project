@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  carepulse-ehr:
+    build: .
+    container_name: carepulse-ehr-server
+    ports:
+      - "8000:8000"
+    environment:
+      - CAREPULSE_ENV=production
+      - CAREPULSE_DB_FILE=/app/data/carepulse.db
+    volumes:
+      - ehr-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  ehr-data:
+    driver: local
