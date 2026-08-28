@@ -15,8 +15,8 @@ OPENAPI_SPECIFICATION: Dict[str, Any] = {
             "email": "api@carepulse.health"
         },
         "license": {
-            "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+            "name": "Proprietary",
+            "url": "https://carepulse.health/terms"
         }
     },
     "servers": [

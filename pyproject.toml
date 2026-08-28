@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "carepulse-ehr"
+version = "2.4.0"
+description = "Enterprise Healthcare Information System and Electronic Health Record Platform"
+authors = ["CarePulse Health Technologies <engineering@carepulse.health>"]
+license = "Proprietary"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.110.0"
+uvicorn = {extras = ["standard"], version = "^0.28.0"}
+pydantic = "^2.6.0"
+sqlalchemy = "^2.0.28"
+cryptography = "^42.0.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0.0"
+pytest-asyncio = "^0.23.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
