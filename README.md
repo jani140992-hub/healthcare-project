@@ -42,7 +42,7 @@ The system requires Python 3.10 or newer.
 - `pytest` >= 8.0.0
 - `pytest-asyncio` >= 0.23.0
 
-Package manifests and locked dependency trees are tracked via `requirements.txt`, `pyproject.toml`, and `poetry.lock`.
+Package manifests and locked dependency trees are tracked via `requirements.txt`, `pyproject.toml`, `poetry.lock`, `package.json`, and `package-lock.json`.
 
 ---
 

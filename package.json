@@ -1,0 +1,14 @@
+{
+  "name": "carepulse-ehr",
+  "version": "2.4.0",
+  "private": true,
+  "description": "CarePulse Enterprise Healthcare Information System and Electronic Health Record Platform",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "python scripts/run_server.py",
+    "test": "python -m unittest discover tests",
+    "seed": "python scripts/seed_database.py",
+    "loc": "python scripts/count_loc.py"
+  },
+  "devDependencies": {}
+}
